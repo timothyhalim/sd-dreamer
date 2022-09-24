@@ -30,8 +30,6 @@ class SDDreamer(QMainWindow):
         weights = absolute_path('stable_diffusion/' + models[model].weights)
 
         self.generator = Generate(
-                        conf=models_config,
-                        model=model,
                         # These args are deprecated, but we need them to specify an absolute path to the weights.
                         weights=weights,
                         config=config,
