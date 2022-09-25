@@ -1,3 +1,4 @@
+@ECHO OFF
 ECHO Setting Current Directory
 %~d0
 cd "%~dp0"
@@ -17,7 +18,7 @@ python dreamer/install_dependencies.py
 python -m pip install -r requirements.txt
 
 ECHO Preparing Weight
-rename "%~dp0/sd-v1-4.ckpt" "%~dp0/model.ckpt"
+rename "sd-v1-4.ckpt" "model.ckpt"
 move "%~dp0/model.ckpt" "%~dp0/dreamer/stable_diffusion/models/ldm/stable-diffusion-v1"
 
 ECHO Install Complete

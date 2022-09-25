@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>icons/Dreamer.png</file>
+    <file>icons/Logo.png</file>
+    <file>icons/brush.png</file>
+    <file>icons/eraser.png</file>
+    <file>icons/new.png</file>
+    <file>icons/save.png</file>
+    <file>icons/stroke.png</file>
+  </qresource>
+</RCC>
