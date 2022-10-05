@@ -14,12 +14,12 @@ ECHO Activating Environment Variable
 call "%~dp0/venv/Scripts/activate.bat"
 
 ECHO Installing Dependencies
-python dreamer/install_dependencies.py
+python stable_diffusion/install_dependencies.py
 python -m pip install -r requirements.txt
 
 ECHO Preparing Weight
 rename "sd-v1-4.ckpt" "model.ckpt"
-move "%~dp0/model.ckpt" "%~dp0/dreamer/stable_diffusion/models/ldm/stable-diffusion-v1"
+move "%~dp0/model.ckpt" "%~dp0/stable_diffusion/models/ldm/stable-diffusion-v1"
 
 ECHO Install Complete
 start run.bat

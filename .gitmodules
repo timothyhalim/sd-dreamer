@@ -1,4 +1,3 @@
-[submodule "dreamer"]
-	path = dreamer
+[submodule "stable_diffusion"]
+	path = stable_diffusion
 	url = https://github.com/timothyhalim/stable-diffusion.git
-	branch = main

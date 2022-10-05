@@ -1,9 +1,13 @@
 if __name__ == "__main__":
-    from Qt.QtWidgets import QApplication
-    from sd_dreamer import SDDreamer
-    import qdarktheme
     import sys
+    from utils import absolute_path
+    sys.path.append(absolute_path("stable_diffusion"))
+
     import ctypes
+
+    from Qt.QtWidgets import QApplication
+    from components.dreamer import Dreamer
+    import qdarktheme
 
     app = QApplication.instance()
     new = False
@@ -15,7 +19,7 @@ if __name__ == "__main__":
         app.setStyleSheet(qdarktheme.load_stylesheet())
         new = True
 
-    w = SDDreamer()
+    w = Dreamer()
     w.show()
 
     if new:

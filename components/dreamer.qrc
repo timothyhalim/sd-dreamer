@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/open.png</file>
     <file>icons/Dreamer.png</file>
     <file>icons/Logo.png</file>
     <file>icons/brush.png</file>

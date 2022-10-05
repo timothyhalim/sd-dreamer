@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>813</width>
-    <height>553</height>
+    <width>830</width>
+    <height>542</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dreamer</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="sd_dreamer.qrc">
+   <iconset resource="dreamer.qrc">
     <normaloff>:/icons/icons/Logo.png</normaloff>:/icons/icons/Logo.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -36,12 +36,12 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="widget" native="true">
+      <widget class="QWidget" name="generator_widget" native="true">
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QComboBox" name="comboBox">
+         <widget class="QComboBox" name="mode">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <item>
            <property name="text">
@@ -69,14 +69,11 @@
          <widget class="QPlainTextEdit" name="prompt_edit"/>
         </item>
         <item>
-         <widget class="QGroupBox" name="settings">
+         <widget class="QGroupBox" name="prompt_settings">
           <property name="title">
-           <string>General Settings</string>
+           <string>Prompt Settings</string>
           </property>
-          <property name="checkable">
-           <bool>false</bool>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <property name="sizeConstraint">
@@ -103,6 +100,9 @@
              </item>
              <item>
               <widget class="QSpinBox" name="image_width">
+               <property name="toolTip">
+                <string>Image width</string>
+               </property>
                <property name="minimum">
                 <number>64</number>
                </property>
@@ -135,6 +135,9 @@
              </item>
              <item>
               <widget class="QSpinBox" name="image_height">
+               <property name="toolTip">
+                <string>Image height</string>
+               </property>
                <property name="minimum">
                 <number>64</number>
                </property>
@@ -151,6 +154,74 @@
              </item>
             </layout>
            </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="image_settings">
+          <property name="visible">
+           <bool>false</bool>
+          </property>
+          <property name="title">
+           <string>Image Settings</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_7">
+             <item>
+              <widget class="QLabel" name="label_8">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>70</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Preserve</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="preserve_image">
+               <property name="toolTip">
+                <string>Prompt influence to image, (0-0.99)
+0: Keep the image
+0,99: Will affect hugely on the image</string>
+               </property>
+               <property name="minimum">
+                <double>0.010000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>1.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.010000000000000</double>
+               </property>
+               <property name="value">
+                <double>0.250000000000000</double>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="general_settings">
+          <property name="title">
+           <string>General Settings</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
@@ -173,12 +244,21 @@
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="seed">
+              <widget class="QLineEdit" name="seed">
                <property name="enabled">
                 <bool>false</bool>
                </property>
-               <property name="maximum">
-                <number>999999999</number>
+               <property name="minimumSize">
+                <size>
+                 <width>75</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>Generator seed</string>
+               </property>
+               <property name="text">
+                <string>0</string>
                </property>
               </widget>
              </item>
@@ -192,6 +272,47 @@
                </property>
                <property name="checked">
                 <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <item>
+              <widget class="QLabel" name="label_11">
+               <property name="minimumSize">
+                <size>
+                 <width>70</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>70</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Variation</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="variation">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="toolTip">
+                <string>Seed variation
+0: Same seed will have same result
+1: Same seed will produce different variation</string>
+               </property>
+               <property name="maximum">
+                <double>1.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.100000000000000</double>
                </property>
               </widget>
              </item>
@@ -220,8 +341,15 @@
              </item>
              <item>
               <widget class="QSlider" name="steps">
+               <property name="toolTip">
+                <string>The steps required to generate image
+Higher means more detail will be produced but will take more time</string>
+               </property>
                <property name="minimum">
                 <number>1</number>
+               </property>
+               <property name="maximum">
+                <number>200</number>
                </property>
                <property name="value">
                 <number>25</number>
@@ -234,7 +362,7 @@
              <item>
               <widget class="QLabel" name="steps_value">
                <property name="text">
-                <string>25</string>
+                <string>025</string>
                </property>
               </widget>
              </item>
@@ -257,14 +385,14 @@
                 </size>
                </property>
                <property name="text">
-                <string>Iterations</string>
+                <string>Images</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QSlider" name="iteration">
-               <property name="enabled">
-                <bool>false</bool>
+               <property name="toolTip">
+                <string>Number of image to be generated</string>
                </property>
                <property name="minimum">
                 <number>1</number>
@@ -277,7 +405,7 @@
              <item>
               <widget class="QLabel" name="iteration_value">
                <property name="text">
-                <string>01</string>
+                <string>001</string>
                </property>
               </widget>
              </item>
@@ -306,11 +434,166 @@
              </item>
              <item>
               <widget class="QComboBox" name="sampler">
+               <property name="toolTip">
+                <string>Image sampler type</string>
+               </property>
+               <property name="currentIndex">
+                <number>7</number>
+               </property>
+               <item>
+                <property name="text">
+                 <string>plms</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>ddim</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>k_dpm_2_a</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>k_dpm_2</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>k_euler_a</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>k_euler</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>k_heun</string>
+                </property>
+               </item>
                <item>
                 <property name="text">
                  <string>k_lms</string>
                 </property>
                </item>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_12">
+             <item>
+              <widget class="QLabel" name="label_12">
+               <property name="minimumSize">
+                <size>
+                 <width>70</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>70</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Strength</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="strength">
+               <property name="toolTip">
+                <string>How strongly the prompt influences the image</string>
+               </property>
+               <property name="decimals">
+                <number>1</number>
+               </property>
+               <property name="minimum">
+                <double>1.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>20.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.500000000000000</double>
+               </property>
+               <property name="value">
+                <double>7.500000000000000</double>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_10">
+             <item>
+              <widget class="QLabel" name="label_9">
+               <property name="minimumSize">
+                <size>
+                 <width>70</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>70</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Upscale</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="upscale">
+               <property name="toolTip">
+                <string>Upscale resolution</string>
+               </property>
+               <property name="maximum">
+                <number>10</number>
+               </property>
+               <property name="value">
+                <number>1</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_8">
+             <item>
+              <widget class="QLabel" name="label_10">
+               <property name="minimumSize">
+                <size>
+                 <width>70</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>70</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Reconstruct</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="sharpness">
+               <property name="toolTip">
+                <string>Reconstruct Face using ESRGAN</string>
+               </property>
+               <property name="value">
+                <number>0</number>
+               </property>
               </widget>
              </item>
             </layout>
@@ -326,48 +609,6 @@
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupBox">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="title">
-           <string>Prompt Settings</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_7">
-             <item>
-              <widget class="QLabel" name="label_8">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>70</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Strength</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSlider" name="horizontalSlider">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="generate_btn">
           <property name="text">
            <string>Generate</string>
@@ -376,11 +617,11 @@
         </item>
        </layout>
       </widget>
-      <widget class="QLabel" name="image_preview">
+      <widget class="QMdiArea" name="image_area">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
          <horstretch>0</horstretch>
-         <verstretch>1</verstretch>
+         <verstretch>0</verstretch>
         </sizepolicy>
        </property>
        <property name="minimumSize">
@@ -389,11 +630,14 @@
          <height>512</height>
         </size>
        </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
+       <property name="background">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>128</red>
+          <green>128</green>
+          <blue>128</blue>
+         </color>
+        </brush>
        </property>
       </widget>
      </widget>
@@ -405,7 +649,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>813</width>
+     <width>826</width>
      <height>21</height>
     </rect>
    </property>
@@ -424,8 +668,12 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionNew"/>
-   <addaction name="actionSave"/>
+   <addaction name="actionOpenImage"/>
+   <addaction name="actionSaveImage"/>
    <addaction name="separator"/>
+   <addaction name="actionInPainting"/>
+   <addaction name="actionBrushColor"/>
+   <addaction name="actionBrushSize"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNew">
@@ -436,44 +684,50 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="sd_dreamer.qrc">
+    <iconset resource="dreamer.qrc">
      <normaloff>:/icons/icons/new.png</normaloff>:/icons/icons/new.png</iconset>
    </property>
    <property name="text">
     <string>New</string>
    </property>
    <property name="toolTip">
-    <string>New</string>
+    <string>Generate New Image
+Shortcut : Ctrl+N</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
    </property>
   </action>
   <action name="actionInPainting">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
-    <iconset resource="sd_dreamer.qrc">
+    <iconset resource="dreamer.qrc">
      <normaloff>:/icons/icons/brush.png</normaloff>:/icons/icons/brush.png</iconset>
    </property>
    <property name="text">
     <string>InPainting</string>
    </property>
    <property name="toolTip">
-    <string>Paint</string>
+    <string>Paint Mode
+Shortcut : Ctrl+P</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="actionSave">
+  <action name="actionSaveImage">
    <property name="icon">
-    <iconset resource="sd_dreamer.qrc">
+    <iconset resource="dreamer.qrc">
      <normaloff>:/icons/icons/save.png</normaloff>:/icons/icons/save.png</iconset>
    </property>
    <property name="text">
-    <string>Save</string>
+    <string>Save Image</string>
    </property>
    <property name="toolTip">
-    <string>Save</string>
+    <string>Save Image
+Shortcut : Ctrl+S</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -483,13 +737,48 @@
    <property name="text">
     <string>Color</string>
    </property>
+   <property name="toolTip">
+    <string>Change Brush ColorShortcut : Ctrl:I</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+I</string>
    </property>
   </action>
+  <action name="actionBrushSize">
+   <property name="icon">
+    <iconset resource="dreamer.qrc">
+     <normaloff>:/icons/icons/stroke.png</normaloff>:/icons/icons/stroke.png</iconset>
+   </property>
+   <property name="text">
+    <string>Size</string>
+   </property>
+   <property name="toolTip">
+    <string>Change Brush Size
+Shortcut : Ctrl+B</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="actionOpenImage">
+   <property name="icon">
+    <iconset resource="dreamer.qrc">
+     <normaloff>:/icons/icons/open.png</normaloff>:/icons/icons/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open Image</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Image
+Shortcut : Ctrl+O</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="sd_dreamer.qrc"/>
+  <include location="dreamer.qrc"/>
  </resources>
  <connections/>
 </ui>
