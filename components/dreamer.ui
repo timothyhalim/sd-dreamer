@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>830</width>
-    <height>542</height>
+    <height>551</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -649,7 +649,7 @@ Higher means more detail will be produced but will take more time</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>826</width>
+     <width>830</width>
      <height>21</height>
     </rect>
    </property>
@@ -685,7 +685,7 @@ Higher means more detail will be produced but will take more time</string>
    </property>
    <property name="icon">
     <iconset resource="dreamer.qrc">
-     <normaloff>:/icons/icons/new.png</normaloff>:/icons/icons/new.png</iconset>
+     <normaloff>:/icons/icons/idea.png</normaloff>:/icons/icons/idea.png</iconset>
    </property>
    <property name="text">
     <string>New</string>

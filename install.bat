@@ -16,6 +16,7 @@ call "%~dp0/venv/Scripts/activate.bat"
 ECHO Installing Dependencies
 python stable_diffusion/install_dependencies.py
 python -m pip install -r requirements.txt
+python stable_diffusion/scripts/preload_models.py
 
 ECHO Preparing Weight
 rename "sd-v1-4.ckpt" "model.ckpt"
