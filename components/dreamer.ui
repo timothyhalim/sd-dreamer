@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>830</width>
-    <height>551</height>
+    <width>831</width>
+    <height>542</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -66,7 +66,20 @@
          </widget>
         </item>
         <item>
-         <widget class="QPlainTextEdit" name="prompt_edit"/>
+         <widget class="QPlainTextEdit" name="prompt_edit">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>1</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>245</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QGroupBox" name="prompt_settings">
@@ -149,6 +162,54 @@
                </property>
                <property name="value">
                 <number>512</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="upscale_settings">
+          <property name="visible">
+           <bool>false</bool>
+          </property>
+          <property name="title">
+           <string>Upscale Settings</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_10">
+             <item>
+              <widget class="QLabel" name="label_9">
+               <property name="minimumSize">
+                <size>
+                 <width>70</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>70</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Upscale</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="upscale">
+               <property name="toolTip">
+                <string>Upscale resolution</string>
+               </property>
+               <property name="maximum">
+                <number>10</number>
+               </property>
+               <property name="value">
+                <number>1</number>
                </property>
               </widget>
              </item>
@@ -369,49 +430,6 @@ Higher means more detail will be produced but will take more time</string>
             </layout>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <item>
-              <widget class="QLabel" name="label_6">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>70</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Images</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSlider" name="iteration">
-               <property name="toolTip">
-                <string>Number of image to be generated</string>
-               </property>
-               <property name="minimum">
-                <number>1</number>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="iteration_value">
-               <property name="text">
-                <string>001</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <item>
               <widget class="QLabel" name="label_7">
@@ -530,42 +548,6 @@ Higher means more detail will be produced but will take more time</string>
             </layout>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_10">
-             <item>
-              <widget class="QLabel" name="label_9">
-               <property name="minimumSize">
-                <size>
-                 <width>70</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>70</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Upscale</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="upscale">
-               <property name="toolTip">
-                <string>Upscale resolution</string>
-               </property>
-               <property name="maximum">
-                <number>10</number>
-               </property>
-               <property name="value">
-                <number>1</number>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_8">
              <item>
               <widget class="QLabel" name="label_10">
@@ -582,17 +564,17 @@ Higher means more detail will be produced but will take more time</string>
                 </size>
                </property>
                <property name="text">
-                <string>Reconstruct</string>
+                <string>Facefix</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="sharpness">
-               <property name="toolTip">
-                <string>Reconstruct Face using ESRGAN</string>
+              <widget class="QDoubleSpinBox" name="reconstruct">
+               <property name="maximum">
+                <double>1.000000000000000</double>
                </property>
-               <property name="value">
-                <number>0</number>
+               <property name="singleStep">
+                <double>0.050000000000000</double>
                </property>
               </widget>
              </item>
@@ -671,7 +653,8 @@ Higher means more detail will be produced but will take more time</string>
    <addaction name="actionOpenImage"/>
    <addaction name="actionSaveImage"/>
    <addaction name="separator"/>
-   <addaction name="actionInPainting"/>
+   <addaction name="actionPaint"/>
+   <addaction name="actionErase"/>
    <addaction name="actionBrushColor"/>
    <addaction name="actionBrushSize"/>
   </widget>
@@ -698,7 +681,7 @@ Shortcut : Ctrl+N</string>
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="actionInPainting">
+  <action name="actionPaint">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -707,7 +690,7 @@ Shortcut : Ctrl+N</string>
      <normaloff>:/icons/icons/brush.png</normaloff>:/icons/icons/brush.png</iconset>
    </property>
    <property name="text">
-    <string>InPainting</string>
+    <string>Paint</string>
    </property>
    <property name="toolTip">
     <string>Paint Mode
@@ -774,6 +757,25 @@ Shortcut : Ctrl+O</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionErase">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="dreamer.qrc">
+     <normaloff>:/icons/icons/eraser.png</normaloff>:/icons/icons/eraser.png</iconset>
+   </property>
+   <property name="text">
+    <string>Erase</string>
+   </property>
+   <property name="toolTip">
+    <string>Erase Mode
+Shortcut : Ctrl+E</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
    </property>
   </action>
  </widget>

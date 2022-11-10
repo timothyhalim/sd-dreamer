@@ -4,9 +4,12 @@ python-devel.tgz
 generate_resource.bat
 *.psd
 output
+src
 
 # Exclude model since the size is too big
-dreamer/stable_diffusion/models/ldm/stable-diffusion-v1/*
+*.ckpt
+*.sha256
+*.pth
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

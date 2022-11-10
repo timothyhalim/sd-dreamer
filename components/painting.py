@@ -141,15 +141,29 @@ class Painting(QLabel):
         self.blank = QColor.fromRgb(255, 255, 255)
         self.blank.setAlpha(0)
         
-        pixmap = QPixmap(512, 512)
-        pixmap.fill(QColor.fromRgbF(0, 0, 0, 0))
-        self.setPainting(pixmap)
+        self._mask_layer = QPixmap(512, 512)
+        self._mask_layer.fill(QColor.fromRgbF(0, 0, 0, 0))
+        self.setPainting(self._mask_layer)
+        self.setDrawMode("paint")
+        self.setBrushMode("draw")
     
     def setPainting(self, pixmap):
-        self._pixmap = pixmap
-        self.paintingChanged.emit(self._pixmap)
         self._size = pixmap.size()
+        # Create blank transparent image
+        self._pixmap = QPixmap(self._size)
+        self._pixmap.fill(QColor.fromRgbF(0, 0, 0, 0))
+        # Draw image over
+        painter = QPainter(self._pixmap)
+        painter.drawPixmap(
+            0,0,self._size.width(), self._size.height(), 
+            pixmap,
+            0,0,self._size.width(), self._size.height(), 
+        )
+        self.paintingChanged.emit(self._pixmap)
         
+        self._mask_layer = QPixmap(self._size)
+        self._mask_layer.fill(self.blank)
+
         self._paint_layer = QPixmap(self._size)
         self._paint_layer.fill(self.blank)
         
@@ -161,7 +175,8 @@ class Painting(QLabel):
     
     def getPainting(self):
         size = self._pixmap.size()
-        painting = QPixmap(size)
+        painting = QPixmap(self._size)
+        painting.fill(QColor.fromRgbF(0, 0, 0, 0))
         painter = QPainter(painting)
         painter.drawPixmap(
             0,0,size.width(), size.height(), 
@@ -175,16 +190,31 @@ class Painting(QLabel):
         )
         painter.end()
         return painting.toImage()
-        # export_pixmap.save(output)
-        # self.exported.emit(output)
-        
-    # def setDrawMode(self, state="paint"):
-    #     """Set drawmode, should be either "paint" or "erase"
 
-    #     Args:
-    #         state (str, optional): "paint" or "erase". Defaults to "paint".
-    #     """
-    #     self._draw_mode = state
+    def getMask(self):
+        size = self._pixmap.size()
+        painting = QPixmap(self._size)
+        painting.fill(QColor.fromRgbF(1, 1, 1, 1))
+        painting.setMask(self._mask_layer)
+        return painting.toImage()
+        
+    def setDrawMode(self, state="paint"):
+        """Set drawmode, should be either "paint", "mask"
+        paint will draw directly on the image
+        while mask will create separate layer for masking
+
+        Args:
+            state (str, optional): "paint", "mask". Defaults to "paint".
+        """
+        self._draw_mode = state
+
+    def setBrushMode(self, state="draw"):
+        """Set brushMode, should be either "draw", "erase"
+
+        Args:
+            state (str, optional): "draw", "erase". Defaults to "draw".
+        """
+        self._brush_mode = state
     
     def setBrushColor(self, color):
         self._brush_color = color
@@ -195,30 +225,46 @@ class Painting(QLabel):
     def setupPainter(self):
         modifiers = QApplication.keyboardModifiers()
         
-        painter = QPainter(self._paint_layer)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setPen(
-            QPen(
-                self._brush_color, self._brush_size, 
-                Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin
+        # painter = QPainter(self._paint_layer)
+        if self._draw_mode == "mask":
+            painter = QPainter(self._mask_layer)
+            painter.setPen(
+                QPen(
+                    QColor.fromRgbF(1, 1, 1, 1), self._brush_size, 
+                    Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin
+                )
             )
-        )
+        else:
+            painter = QPainter(self._paint_layer)
+            painter.setPen(
+                QPen(
+                    self._brush_color, self._brush_size, 
+                    Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin
+                )
+            )
+
+        painter.setRenderHint(QPainter.Antialiasing)
         
         painter.setCompositionMode(
-            QPainter.CompositionMode_SourceOver if self._draw_mode == 'paint'
+            QPainter.CompositionMode_SourceOver if self._brush_mode == 'draw'
             else QPainter.CompositionMode_Clear
         )
         if modifiers == Qt.AltModifier:
             painter.setCompositionMode(
-                QPainter.CompositionMode_Clear if self._draw_mode == 'paint'
+                QPainter.CompositionMode_Clear if self._brush_mode == 'draw'
                 else QPainter.CompositionMode_SourceOver
             )
         return painter
         
     def paintEvent(self, event):
         painter = QPainter(self)
-        painter.drawPixmap(self.geometry(), self._pixmap)
-        painter.drawPixmap(self.geometry(), self._paint_layer)
+        pixmap = self._pixmap.copy()
+        pixmap.setMask(self._mask_layer)
+        painter.drawPixmap(self.geometry(), pixmap)
+
+        pixmap = self._paint_layer.copy()
+        pixmap.setMask(self._mask_layer)
+        painter.drawPixmap(self.geometry(), pixmap)
         
         if self._drawing_enabled:
             if self._is_drawing: return
