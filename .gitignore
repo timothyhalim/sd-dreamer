@@ -4,7 +4,9 @@ python-devel.tgz
 generate_resource.bat
 *.psd
 output
+training
 src
+logs
 
 # Exclude model since the size is too big
 *.ckpt

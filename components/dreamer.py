@@ -55,6 +55,7 @@ class Dreamer(QMainWindow):
         self.random_seed.stateChanged.connect(lambda : self.seed.setEnabled(not self.random_seed.isChecked()))
         self.random_seed.stateChanged.connect(lambda : self.variation.setEnabled(not self.random_seed.isChecked()))
         self.generate_btn.clicked.connect(self.generate)
+        self.upscale_btn.clicked.connect(self.upscale_image)
 
         models_config  = absolute_path("stable_diffusion/configs/models.yaml")
         model   = "stable-diffusion-1.4"
@@ -64,13 +65,14 @@ class Dreamer(QMainWindow):
         weights = absolute_path("stable_diffusion/" + models[model].weights)
 
         self.generator = Generate(
+                        embedding_path=None,
                         # These args are deprecated, but we need them to specify an absolute path to the weights.
                         weights=weights,
                         config=config
                     )
         self.generator.load_model()
 
-        self.seed.setText(str(self.generator.seed))
+        self.seed.setText(str(self.generator.seed or 0))
         
         self.set_brush_color(QColor.fromRgb(255, 255, 255, 255))
         self.change_mode()
@@ -89,32 +91,42 @@ class Dreamer(QMainWindow):
         self.canvas.painting.setBrushMode("erase")
 
     def change_mode(self):
+        self.current_mode = self.mode.currentText()
+        self.actionPaint.setChecked(False)
+        self.actionErase.setChecked(False)
+
+        self.general_widget.setVisible(True)
+        self.training_widget.setVisible(False)
+        self.upscale_widget.setVisible(False)
+
         self.general_settings.setVisible(True)
         self.prompt_settings.setVisible(False)
         self.image_settings.setVisible(False)
-        self.upscale_settings.setVisible(False)
         self.actionPaint.setVisible(False)
         self.actionErase.setVisible(False)
         self.actionBrushColor.setVisible(False)
         self.actionBrushSize.setVisible(False)
 
-        if self.mode.currentText() == "Text to Image":
+        if self.current_mode == "Text to Image":
             self.prompt_settings.setVisible(True)
-        elif self.mode.currentText() == "Image to Image":
+        elif self.current_mode == "Image to Image":
             self.canvas.painting.setDrawMode("paint")
             self.image_settings.setVisible(True)
             self.actionPaint.setVisible(True)
             self.actionErase.setVisible(True)
             self.actionBrushColor.setVisible(True)
             self.actionBrushSize.setVisible(True)
-        elif self.mode.currentText() == "InPainting":
+        elif self.current_mode == "InPainting":
             self.canvas.painting.setDrawMode("mask")
             self.actionPaint.setVisible(True)
             self.actionErase.setVisible(True)
             self.actionBrushSize.setVisible(True)
-        elif self.mode.currentText() == "Upscaling":
-            self.upscale_settings.setVisible(True)
-            self.general_settings.setVisible(False)
+        elif self.current_mode == "Upscaling":
+            self.general_widget.setVisible(False)
+            self.upscale_widget.setVisible(True)
+        elif self.current_mode == "Training":
+            self.general_widget.setVisible(False)
+            self.training_widget.setVisible(True)
 
     def open_color_picker(self):
         menu = PopupMenu(self)
@@ -179,34 +191,35 @@ class Dreamer(QMainWindow):
         self.statusBar().clearMessage()
         QApplication.processEvents()
 
+    def upscale_image(self):
+        upscale = None if self.upscale.value() == 1 else [self.upscale.value()]
+        if upscale:
+            self.generator.upscale(self.canvas.getPainting(), int(self.seed.text()), upscale, self.image_writer)
+
     def generate(self):
-        if self.mode.currentText() == "Upscaling":
-            upscale = None if self.upscale.value() == 1 else [self.upscale.value()]
-            if upscale:
-                self.generator.upscale(self.canvas.getPainting(), int(self.seed.text()), upscale, self.image_writer)
-        else:
-            prompt=self.prompt_edit.toPlainText()
-            steps = self.steps.value()
-            seed = None if self.random_seed.isChecked() else int(self.seed.text())
-            width = self.image_width.value()
-            height = self.image_height.value()
-            seamless = self.seamless.isChecked() # generate tileable/seamless textures
-            init_img = None if self.mode.currentText() == "Text to Image" else self.canvas.getPainting()  # path to an initial image - its dimensions override width and height
-            init_mask = self.canvas.painting.getMask() if self.mode.currentText() == "InPainting" else None
-            prompt_strength = self.strength.value() # how strongly the prompt influences the image (7.5) (must be >1)
-            image_change = min(max(1-self.preserve_image.value(), 0.01), 0.99) if self.mode.currentText() == "Image to Image" else 0.99 # strength for noising/unnoising init_img. 0.0 preserves image exactly, 1.0 replaces it completely
-            upscaling = None  # strength for GFPGAN. 0.0 preserves image exactly, 1.0 replaces it completely
-            reconstruct = self.reconstruct.value() # strength for GFPGAN. 0.0 preserves image exactly, 1.0 replaces it completely
-            seed_randomness = self.variation.value() # image randomness (eta=0.0 means the same seed always produces the same image)
-            sampler_name = self.sampler.currentText()
+        prompt=self.prompt_edit.toPlainText()
+        steps = self.steps.value()
+        seed = None if self.random_seed.isChecked() else int(self.seed.text())
+        width = self.image_width.value()
+        height = self.image_height.value()
+        seamless = self.seamless.isChecked() # generate tileable/seamless textures
+        init_img = None if self.current_mode == "Text to Image" else self.canvas.getPainting()  # path to an initial image - its dimensions override width and height
+        init_mask = self.canvas.painting.getMask() if self.current_mode == "InPainting" else None
+        prompt_strength = self.strength.value() # how strongly the prompt influences the image (7.5) (must be >1)
+        image_change = min(max(1-self.preserve_image.value(), 0.01), 0.99) if self.current_mode == "Image to Image" else 0.99 # strength for noising/unnoising init_img. 0.0 preserves image exactly, 1.0 replaces it completely
+        upscaling = None  # strength for GFPGAN. 0.0 preserves image exactly, 1.0 replaces it completely
+        reconstruct = self.reconstruct.value() # strength for GFPGAN. 0.0 preserves image exactly, 1.0 replaces it completely
+        seed_randomness = self.variation.value() # image randomness (eta=0.0 means the same seed always produces the same image)
+        sampler_name = self.sampler.currentText()
 
-            self.progressbar.setValue(0)
-            self.progressbar.setMaximum(steps)
-            self.generate_btn.setEnabled(False)
-            self.statusBar().showMessage("Generating Image from Prompt")
-            self.progressbar.show()
-            QApplication.processEvents()
+        self.progressbar.setValue(0)
+        self.progressbar.setMaximum(steps)
+        self.generate_btn.setEnabled(False)
+        self.statusBar().showMessage("Generating Image from Prompt")
+        self.progressbar.show()
+        QApplication.processEvents()
 
+        try:
             self.generator.prompt2image(
                 prompt=prompt,
                 iterations=1,
@@ -227,6 +240,10 @@ class Dreamer(QMainWindow):
                 image_callback=self.image_writer,
                 sampler_name=sampler_name
             )
+        except:
+            self.generate_btn.setEnabled(True)
+            self.statusBar().showMessage("Error")
+
 
     def open_image(self):
         filepath = QFileDialog.getOpenFileName(
